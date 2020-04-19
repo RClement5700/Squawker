@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 apply plugin: 'com.google.gms.google-services'
 
 
@@ -34,7 +33,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     // Schematic dependencies for ContentProvider
-    apt 'net.simonvt.schematic:schematic-compiler:0.6.3'
+    annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.6.3'
     implementation 'net.simonvt.schematic:schematic:0.6.3'
 
     // Preferences Dependencies
@@ -43,8 +42,6 @@ dependencies {
     // Firebase dependency
     implementation 'com.google.firebase:firebase-messaging:20.1.5'
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    //implementation 'com.google.code.maven-play-plugin.org.playframework:play:1.5.0'
-
 }
 // Apply the Google Services plugin. Make sure to add the google-services.json file in the app
 // folder. You download it from the Firebase console

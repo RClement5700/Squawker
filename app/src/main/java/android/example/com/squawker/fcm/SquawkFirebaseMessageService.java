@@ -80,14 +80,13 @@ public class SquawkFirebaseMessageService extends FirebaseMessagingService {
         // Check if message contains a data payload.
 
         Map<String, String> data = remoteMessage.getData();
-
+        System.err.println("Data size: " + data.size());
         if (data.size() > 0) {
             Log.d(LOG_TAG, "Message data payload: " + data);
 
             // Send a notification that you got a new message
             sendNotification(data);
             insertSquawk(data);
-
         }
     }
 

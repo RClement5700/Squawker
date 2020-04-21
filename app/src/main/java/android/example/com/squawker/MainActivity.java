@@ -26,7 +26,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -36,7 +38,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -86,14 +91,58 @@ public class MainActivity extends AppCompatActivity implements
         mAdapter = new SquawkAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
+        // TODO (1) Make a new Service in the fcm package that extends from FirebaseMessagingService.
+        // TODO (2) As part of the new Service - Override onMessageReceived. This method will
+        // be triggered whenever a squawk is received. You can get the data from the squawk
+        // message using getData(). When you send a test message, this data will include the
+        // following key/value pairs:
+        // test: true
+        // author: Ex. "TestAccount"
+        // authorKey: Ex. "key_test"
+        // message: Ex. "Hello world"
+        // date: Ex. 1484358455343
+        // TODO (3) As part of the new Service - If there is message data, get the data using
+        // the keys and do two things with it :
+        // 1. Display a notification with the first 30 character of the message
+        // 2. Use the content provider to insert a new message into the local database
+        // Hint: You shouldn't be doing content provider operations on the main thread.
+        // If you don't know how to make notifications or interact with a content provider
+        // look at the notes in the classroom for help.
+
+
+        // TODO (5) You can delete the code below for getting the extras from a notification message,
+        // since this was for testing purposes and not part of Squawker.
+
+        loadToken();
+    }
+
+    public void loadToken() {
+
         // Start the loader
-        getSupportLoaderManager().initLoader(LOADER_ID_MESSAGES, null, this);
+//        getSupportLoaderManager().initLoader(LOADER_ID_MESSAGES, null, this);
 
-        // Get token from the ID Service you created and show it in a log
-        String token = FirebaseInstanceId.getInstance().getToken();
-        String msg = getString(R.string.message_token_format, token);
-        Log.d(LOG_TAG, msg);
+//        // Get token from the ID Service you created and show it in a log
+//        String token = FirebaseInstanceId.getInstance().getToken();
+//        String msg = getString(R.string.message_token_format, token);
+//        Log.d(LOG_TAG, msg);
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(LOG_TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
 
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = getString(R.string.message_token_format, token);
+                        Log.d(LOG_TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
